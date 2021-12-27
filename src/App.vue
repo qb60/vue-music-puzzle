@@ -1,20 +1,37 @@
 <template>
   <v-app class="app">
-    <v-content>
+    <v-content class="pa-3">
       <v-toolbar>
-        <v-app-bar-nav-icon></v-app-bar-nav-icon>
         <v-toolbar-title>M-P</v-toolbar-title>
-        <v-spacer></v-spacer>
       </v-toolbar>
-      <div>
-        <audio-player
+      <v-form>
+        <div
           v-for="(track, index) in $options.tracks"
-          :src="track"
           :key="index"
-          ref="audioPlayers"
-          @play-started="stopOtherPlayers"
-        />
-      </div>
+          class="mt-3"
+        >
+          <v-row>
+            <v-col cols="12" sm="12" md="6" lg="6" xl="6">
+              <audio-player
+                :src="track"
+                ref="audioPlayers"
+                @play-started="stopOtherPlayers"
+              />
+            </v-col>
+            <v-col cols="12" sm="12" md="6" lg="6" xl="6">
+              <v-select
+                :items="$options.languages"
+                outlined
+                hide-details
+              ></v-select>
+            </v-col>
+          </v-row>
+          <v-divider class="my-4" />
+        </div>
+        <div class="d-flex justify-end">
+          <v-btn color="success">Submit</v-btn>
+        </div>
+      </v-form>
     </v-content>
   </v-app>
 </template>
@@ -33,10 +50,22 @@ const tracks = [
   "tracks/8.mp3"
 ];
 
+const languages = [
+  "Belorussian",
+  "Bulgarian",
+  "Czech",
+  "Polish",
+  "Russian",
+  "Slovak",
+  "Slovenian",
+  "Ukrainian"
+];
+
 export default {
   name: "App",
   components: { AudioPlayer },
   tracks,
+  languages,
   methods: {
     stopOtherPlayers(player) {
       this.$refs.audioPlayers.forEach((audioPlayer) =>
