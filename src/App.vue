@@ -1,10 +1,13 @@
 <template>
   <v-app class="app">
+    <v-toolbar elevation="2">
+      <v-icon class="pr-4">mdi-music-clef-treble</v-icon>
+      <v-toolbar-title>M-P</v-toolbar-title>
+      <v-spacer />
+      <v-switch v-model="lightTheme" label="Light theme" hide-details />
+    </v-toolbar>
     <v-main class="pa-4">
-      <v-toolbar>
-        <v-toolbar-title>M-P</v-toolbar-title>
-      </v-toolbar>
-      <v-form class="mt-4">
+      <v-form>
         <puzzle-element
           v-for="track in $options.tracks"
           :key="track.id"
@@ -55,7 +58,8 @@ export default {
   languages,
   data() {
     return {
-      availableLanguages: []
+      availableLanguages: [],
+      lightTheme: false
     };
   },
   beforeMount() {
@@ -64,6 +68,11 @@ export default {
   computed: {
     isFromSubmittable() {
       return this.availableLanguages.length === 0;
+    }
+  },
+  watch: {
+    lightTheme() {
+      this.$vuetify.theme.dark = !this.lightTheme;
     }
   },
   methods: {
