@@ -1,4 +1,5 @@
 # music-puzzle
+WEB app for making music puzzles (audio player + answers) made with Vue 2
 
 ## Project setup
 ```
@@ -25,5 +26,3 @@ npm run test:unit
 npm run lint
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
