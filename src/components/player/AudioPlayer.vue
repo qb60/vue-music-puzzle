@@ -13,7 +13,7 @@ const controls = [
   "volume"
 ];
 
-export const Events = {
+const Events = {
   PLAY_STARTED_EVENT: "play-started"
 };
 
@@ -55,10 +55,8 @@ export default {
     return typeof slots === "function" ? slots()[0] : slots;
   },
   methods: {
-    stopIfNotYou(player) {
-      if (this.player !== player) {
-        this.player.pause();
-      }
+    stop() {
+      this.player.pause();
     }
   }
 };

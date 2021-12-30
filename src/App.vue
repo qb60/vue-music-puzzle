@@ -1,53 +1,40 @@
 <template>
   <v-app class="app">
-    <v-content class="pa-3">
+    <v-main class="pa-4">
       <v-toolbar>
         <v-toolbar-title>M-P</v-toolbar-title>
       </v-toolbar>
-      <v-form>
-        <div
-          v-for="(track, index) in $options.tracks"
-          :key="index"
-          class="mt-3"
-        >
-          <v-row>
-            <v-col cols="12" sm="12" md="6" lg="6" xl="6">
-              <audio-player
-                :src="track"
-                ref="audioPlayers"
-                @play-started="stopOtherPlayers"
-              />
-            </v-col>
-            <v-col cols="12" sm="12" md="6" lg="6" xl="6">
-              <v-select
-                :items="$options.languages"
-                outlined
-                hide-details
-              ></v-select>
-            </v-col>
-          </v-row>
-          <v-divider class="my-4" />
-        </div>
+      <v-form class="mt-4">
+        <puzzle-element
+          v-for="track in $options.tracks"
+          :key="track.id"
+          :track="track"
+          :languages="availableLanguages"
+          ref="puzzleElements"
+          @play-started="stopOtherPlayers"
+          @language-selected="onLanguageSelected"
+          @language-unselected="onLanguageUnselected"
+        />
         <div class="d-flex justify-end">
-          <v-btn color="success">Submit</v-btn>
+          <v-btn color="success" :disabled="!isFromSubmittable">Submit</v-btn>
         </div>
       </v-form>
-    </v-content>
+    </v-main>
   </v-app>
 </template>
 
 <script>
-import AudioPlayer from "./components/player/AudioPlayer.vue";
+import PuzzleElement from "./components/PuzzleElement";
 
 const tracks = [
-  "tracks/1.mp3",
-  "tracks/2.mp3",
-  "tracks/3.mp3",
-  "tracks/4.mp3",
-  "tracks/5.mp3",
-  "tracks/6.mp3",
-  "tracks/7.mp3",
-  "tracks/8.mp3"
+  { id: 0, path: "tracks/1.mp3" },
+  { id: 1, path: "tracks/2.mp3" },
+  { id: 2, path: "tracks/3.mp3" },
+  { id: 3, path: "tracks/4.mp3" },
+  { id: 4, path: "tracks/5.mp3" },
+  { id: 5, path: "tracks/6.mp3" },
+  { id: 6, path: "tracks/7.mp3" },
+  { id: 7, path: "tracks/8.mp3" }
 ];
 
 const languages = [
@@ -63,14 +50,35 @@ const languages = [
 
 export default {
   name: "App",
-  components: { AudioPlayer },
+  components: { PuzzleElement },
   tracks,
   languages,
+  data() {
+    return {
+      availableLanguages: []
+    };
+  },
+  beforeMount() {
+    this.availableLanguages.push(...languages);
+  },
+  computed: {
+    isFromSubmittable() {
+      return this.availableLanguages.length === 0;
+    }
+  },
   methods: {
-    stopOtherPlayers(player) {
-      this.$refs.audioPlayers.forEach((audioPlayer) =>
-        audioPlayer.stopIfNotYou(player)
+    stopOtherPlayers(trackId) {
+      this.$refs.puzzleElements.forEach((puzzleElement) =>
+        puzzleElement.stopPlayerIfAnotherTrack(trackId)
       );
+    },
+    onLanguageSelected(language) {
+      this.availableLanguages = this.availableLanguages.filter(
+        (lang) => lang !== language
+      );
+    },
+    onLanguageUnselected(language) {
+      this.availableLanguages = [...this.availableLanguages, language];
     }
   }
 };
